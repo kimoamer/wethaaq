@@ -1,7 +1,7 @@
 [project]
 name = "wethaaq"
 authors = [
-    { name = "Mawared", email = "admin@mawared.com"}
+    { name = "Hak3em", email = "a.amer@devoneers.org"}
 ]
 description = "HRIS Contract Management System"
 requires-python = ">=3.10"

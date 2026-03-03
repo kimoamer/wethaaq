@@ -1,9 +1,10 @@
 app_name = "wethaaq"
 app_title = "Wethaaq"
-app_publisher = "Mawared"
+app_publisher = "Hak3em"
 app_description = "HRIS Contract Management System"
-app_email = "admin@mawared.com"
+app_email = "a.amer@devoneers.org"
 app_license = "mit"
+app_version = "0.1.0"
 
 # Apps
 # ------------------
@@ -51,7 +52,7 @@ app_license = "mit"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "wethaaq/public/icons.svg"
+app_include_icons = "wethaaq/icons/wethaaq/icons.svg"
 
 # Home Pages
 # ----------
@@ -78,6 +79,15 @@ app_license = "mit"
 # 	"methods": "wethaaq.utils.jinja_methods",
 # 	"filters": "wethaaq.utils.jinja_filters"
 # }
+
+# Fixtures — export with: bench export-fixtures
+# ----------
+# Ensures Notification and Workspace records are bundled with the app
+# and auto-imported on: bench migrate / bench install-app
+fixtures = [
+	{"dt": "Notification", "filters": [["module", "=", "Wethaaq"]]},
+	{"dt": "Workspace", "filters": [["module", "=", "Wethaaq"]]},
+]
 
 # Installation
 # ------------
@@ -117,13 +127,13 @@ app_license = "mit"
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+permission_query_conditions = {
+	"Wethaaq Contract": "wethaaq.wethaaq.doctype.wethaaq_contract.wethaaq_contract.get_permission_query_conditions",
+}
+
+has_permission = {
+	"Wethaaq Contract": "wethaaq.wethaaq.doctype.wethaaq_contract.wethaaq_contract.has_permission_check",
+}
 
 # DocType Class
 # ---------------
@@ -137,34 +147,20 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Wethaaq Contract": {
+		"on_submit": "wethaaq.wethaaq.doctype.wethaaq_contract.wethaaq_contract.on_submit_hook",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"wethaaq.tasks.all"
-# 	],
-# 	"daily": [
-# 		"wethaaq.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"wethaaq.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"wethaaq.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"wethaaq.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"wethaaq.tasks.check_contract_expiry"
+	]
+}
 
 # Testing
 # -------
@@ -181,9 +177,10 @@ app_license = "mit"
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "wethaaq.task.get_dashboard_data"
-# }
+override_doctype_dashboards = {
+	"Employee": "wethaaq.overrides.dashboard_overrides.get_dashboard_for_employee",
+	"Job Offer": "wethaaq.overrides.dashboard_overrides.get_dashboard_for_job_offer"
+}
 
 # exempt linked doctypes from being automatically cancelled
 #

@@ -1,0 +1,70 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"header_1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Operations</b></span>\",\"col\":12}},{\"id\":\"contract_shortcuts\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Contracts\",\"col\":3}},{\"id\":\"templates_shortcuts\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Templates\",\"col\":3}},{\"id\":\"clauses_shortcuts\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Clauses\",\"col\":3}},{\"id\":\"header_2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports</b></span>\",\"col\":12}},{\"id\":\"overview_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Contracts Overview\",\"col\":3}}]",
+ "creation": "2026-03-03 06:31:33.024048",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "file-large",
+ "idx": 0,
+ "indicator_color": "",
+ "is_hidden": 0,
+ "label": "Wethaaq (Contracts)",
+ "links": [],
+ "modified": "2026-03-03 17:36:36.141671",
+ "modified_by": "Administrator",
+ "module": "Wethaaq",
+ "name": "Wethaaq (Contracts)",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "HR",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "HR User"
+  }
+ ],
+ "sequence_id": 50.0,
+ "shortcuts": [
+  {
+   "color": "Green",
+   "doc_view": "",
+   "format": "Active",
+   "label": "Contracts",
+   "link_to": "Wethaaq Contract",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "label": "Templates",
+   "link_to": "Wethaaq Contract Template",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Clauses",
+   "link_to": "Wethaaq Clause",
+   "type": "DocType"
+  },
+  {
+   "color": "Yellow",
+   "doc_view": "",
+   "label": "Contracts Overview",
+   "link_to": "Contracts Overview",
+   "report_ref_doctype": "Wethaaq Contract",
+   "type": "Report"
+  }
+ ],
+ "title": "Wethaaq (Contracts)"
+}

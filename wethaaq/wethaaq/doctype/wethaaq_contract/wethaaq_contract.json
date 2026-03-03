@@ -1,0 +1,260 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "format:CONT-{####}",
+    "creation": "2026-03-03 05:56:33.133817",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "employee",
+        "employee_name",
+        "job_offer",
+        "contract_type",
+        "template",
+        "template_name",
+        "company",
+        "department",
+        "start_date",
+        "end_date",
+        "cb1",
+        "status",
+        "termination_date",
+        "termination_reason",
+        "governing_law",
+        "basic_salary",
+        "currency",
+        "sb1",
+        "contract_file",
+        "content_hash",
+        "evidence_pack_uri",
+        "amended_from",
+        "appendices_section",
+        "appendices"
+    ],
+    "fields": [
+        {
+            "fieldname": "employee",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Employee",
+            "options": "Employee",
+            "reqd": 1
+        },
+        {
+            "fieldname": "employee_name",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Employee Name",
+            "fetch_from": "employee.employee_name",
+            "read_only": 1
+        },
+        {
+            "fieldname": "job_offer",
+            "fieldtype": "Link",
+            "label": "Job Offer",
+            "options": "Job Offer",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "contract_type",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Contract Type",
+            "options": "Fixed\nOpen\nIntern\nAddon\nOther",
+            "reqd": 1
+        },
+        {
+            "fieldname": "template",
+            "fieldtype": "Link",
+            "label": "Template",
+            "options": "Wethaaq Contract Template"
+        },
+        {
+            "fieldname": "template_name",
+            "fieldtype": "Data",
+            "label": "Template Name",
+            "fetch_from": "template.template_name",
+            "read_only": 1
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "in_list_view": 0,
+            "in_standard_filter": 1,
+            "label": "Company",
+            "options": "Company",
+            "reqd": 1,
+            "default": ""
+        },
+        {
+            "fieldname": "department",
+            "fieldtype": "Link",
+            "in_list_view": 0,
+            "in_standard_filter": 1,
+            "label": "Department",
+            "options": "Department"
+        },
+        {
+            "fieldname": "start_date",
+            "fieldtype": "Date",
+            "in_list_view": 1,
+            "label": "Start Date",
+            "reqd": 1
+        },
+        {
+            "fieldname": "end_date",
+            "fieldtype": "Date",
+            "label": "End Date"
+        },
+        {
+            "fieldname": "cb1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Draft",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "in_standard_filter": 1,
+            "label": "Status",
+            "options": "Draft\nReview\nSigned\nActive\nExpired\nTerminated\nArchived"
+        },
+        {
+            "fieldname": "termination_date",
+            "fieldtype": "Date",
+            "label": "Termination Date",
+            "depends_on": "eval:doc.status === 'Terminated'",
+            "read_only": 1
+        },
+        {
+            "fieldname": "termination_reason",
+            "fieldtype": "Small Text",
+            "label": "Termination Reason",
+            "depends_on": "eval:doc.status === 'Terminated'",
+            "read_only": 1
+        },
+        {
+            "fieldname": "governing_law",
+            "fieldtype": "Data",
+            "label": "Governing Law"
+        },
+        {
+            "fieldname": "basic_salary",
+            "fieldtype": "Currency",
+            "label": "Basic Salary",
+            "options": "currency"
+        },
+        {
+            "fieldname": "currency",
+            "fieldtype": "Link",
+            "label": "Currency",
+            "options": "Currency",
+            "default": "SAR"
+        },
+        {
+            "fieldname": "sb1",
+            "fieldtype": "Section Break",
+            "label": "File & Signature"
+        },
+        {
+            "fieldname": "contract_file",
+            "fieldtype": "Attach",
+            "label": "Contract File"
+        },
+        {
+            "fieldname": "content_hash",
+            "fieldtype": "Data",
+            "label": "Content Hash",
+            "read_only": 1
+        },
+        {
+            "fieldname": "evidence_pack_uri",
+            "fieldtype": "Data",
+            "label": "Evidence Pack URI",
+            "read_only": 1
+        },
+        {
+            "fieldname": "employee_signature",
+            "fieldtype": "Signature",
+            "label": "Employee Signature",
+            "read_only": 1
+        },
+        {
+            "fieldname": "amended_from",
+            "fieldtype": "Link",
+            "label": "Amended From",
+            "no_copy": 1,
+            "options": "Wethaaq Contract",
+            "print_hide": 1,
+            "read_only": 1,
+            "search_index": 1
+        },
+        {
+            "fieldname": "appendices_section",
+            "fieldtype": "Section Break",
+            "label": "Appendices and Clauses"
+        },
+        {
+            "fieldname": "appendices",
+            "fieldtype": "Table",
+            "label": "Appendices",
+            "options": "Wethaaq Contract Appendix"
+        }
+    ],
+    "grid_page_length": 50,
+    "index_web_pages_for_search": 1,
+    "is_submittable": 1,
+    "links": [],
+    "modified": "2026-03-03 06:40:28.809742",
+    "modified_by": "Administrator",
+    "module": "Wethaaq",
+    "name": "Wethaaq Contract",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "cancel": 1,
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "amend": 1,
+            "cancel": 1,
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "HR Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "HR User",
+            "write": 1
+        }
+    ],
+    "row_format": "Dynamic",
+    "rows_threshold_for_grid_search": 20,
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1
+}

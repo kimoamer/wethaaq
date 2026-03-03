@@ -1,0 +1,247 @@
+{% extends "templates/web.html" %}
+
+{% block header %}
+<style>
+    .contract-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 40px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        font-family: Arial, sans-serif;
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .contract-details-table {
+        width: 100%;
+        margin-bottom: 30px;
+        border-collapse: collapse;
+    }
+
+    .contract-details-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .contract-details-table td.label {
+        font-weight: bold;
+        color: #555;
+        width: 30%;
+    }
+
+    .contract-body {
+        line-height: 1.6;
+        margin-bottom: 40px;
+        font-size: 14px;
+    }
+
+    .appendix-section {
+        margin-top: 40px;
+        border-top: 2px solid #333;
+        padding-top: 20px;
+    }
+
+    .appendix-item {
+        margin-bottom: 30px;
+    }
+
+    .appendix-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .signature-section {
+        margin-top: 50px;
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .signature-pad {
+        border: 1px dashed #ccc;
+        background: #fff;
+        border-radius: 4px;
+        display: block;
+        margin-bottom: 10px;
+        touch-action: none;
+    }
+
+    .signature-instructions {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .btn-sign {
+        margin-left: 10px;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+{% if error_message %}
+<div class="container my-5 text-center">
+    <div class="alert alert-danger" style="display: inline-block;">
+        <h4>{{ _("Error") }}</h4>
+        <p>{{ error_message }}</p>
+    </div>
+</div>
+{% else %}
+<div class="contract-container">
+    <h2 class="page-title">{{ _("Employment Contract") }}</h2>
+
+    <table class="contract-details-table">
+        <tr>
+            <td class="label">{{ _("Contract No.") }}</td>
+            <td>{{ contract.name }}</td>
+        </tr>
+        <tr>
+            <td class="label">{{ _("Employee") }}</td>
+            <td>{{ contract.employee_name or contract.employee }}</td>
+        </tr>
+        {% if contract.department %}
+        <tr>
+            <td class="label">{{ _("Department") }}</td>
+            <td>{{ contract.department }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td class="label">{{ _("Period") }}</td>
+            <td>
+                {{ frappe.utils.format_date(contract.start_date) }}
+                {% if contract.end_date %} → {{ frappe.utils.format_date(contract.end_date) }}{% else %} ({{
+                _("Open-Ended") }}){% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="label">{{ _("Type") }}</td>
+            <td>{{ contract.contract_type }}</td>
+        </tr>
+    </table>
+
+    <hr style="border:1px solid #ccc; margin:20px 0;">
+
+    <div class="contract-body">
+        {% if template_html %}
+        {{ template_html }}
+        {% else %}
+        <p><em>{{ _("No contract template selected.") }}</em></p>
+        {% endif %}
+    </div>
+
+    {% if appendices_html_list %}
+    <div class="appendix-section">
+        <h3>{{ _("Appendices & Clauses") }}</h3>
+        {% set ns = namespace(idx=0) %}
+        {% for appx in appendices_html_list %}
+        {% set ns.idx = ns.idx + 1 %}
+        <div class="appendix-item">
+            <div class="appendix-title">{{ _("Appendix") }} {{ ns.idx }}: {{ appx.clause }}</div>
+            {{ appx.html }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if contract.governing_law %}
+    <p style="margin-top: 20px; font-size:12px; color:#666; text-align: center;">
+        {{ _("This contract is governed by") }}: {{ contract.governing_law }}
+    </p>
+    {% endif %}
+
+    <!-- Signature Section -->
+    {% if has_signature %}
+    <div class="alert alert-success mt-5 text-center">
+        <h4>{{ _("Contract Signed") }}</h4>
+        <p>{{ _("This contract has already been signed by the employee.") }}</p>
+        {% if contract.employee_signature %}
+        <img src="{{ contract.employee_signature }}" alt="Signature"
+            style="max-width: 300px; border: 1px solid #ccc; padding: 10px; background: #fff; margin-top: 15px;">
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="signature-section">
+        <h4>{{ _("Employee Signature") }}</h4>
+        <p class="signature-instructions">{{ _("Please draw your signature below to indicate your agreement to the terms
+            specified in this contract.") }}</p>
+
+        <div class="text-center">
+            <canvas id="signature-pad" class="signature-pad" width="600" height="200"></canvas>
+        </div>
+
+        <div class="text-right mt-3" style="text-align: right;">
+            <button type="button" class="btn btn-default" id="clear-signature">{{ _("Clear") }}</button>
+            <button type="button" class="btn btn-primary btn-sign" id="submit-signature">{{ _("Submit Document")
+                }}</button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    frappe.ready(function () {
+        if (document.getElementById('signature-pad')) {
+            var canvas = document.getElementById('signature-pad');
+
+            // Adjust canvas width for smaller screens
+            if (window.innerWidth < 700) {
+                canvas.width = window.innerWidth - 100;
+            }
+
+            var signaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgba(255, 255, 255, 0)',
+                penColor: 'rgb(0, 0, 0)'
+            });
+
+            document.getElementById('clear-signature').addEventListener('click', function () {
+                signaturePad.clear();
+            });
+
+            document.getElementById('submit-signature').addEventListener('click', function () {
+                if (signaturePad.isEmpty()) {
+                    frappe.msgprint("{{ _('Please provide a signature first.') }}");
+                    return;
+                }
+
+                // Get base64 string
+                var dataUrl = signaturePad.toDataURL('image/png');
+
+                // Show loading on button
+                var $btn = $(this);
+                $btn.prop('disabled', true).text("{{ _('Submitting...') }}");
+
+                frappe.call({
+                    method: 'wethaaq.www.contract_sign.submit_signature',
+                    args: {
+                        name: '{{ frappe.form_dict.get("name", "") }}',
+                        token: '{{ frappe.form_dict.get("token", "") }}',
+                        signature: dataUrl
+                    },
+                    callback: function (r) {
+                        if (!r.exc) {
+                            frappe.show_alert({ message: "{{ _('Contract signed successfully.') }}", indicator: 'green' });
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            $btn.prop('disabled', false).text("{{ _('Submit Document') }}");
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}
