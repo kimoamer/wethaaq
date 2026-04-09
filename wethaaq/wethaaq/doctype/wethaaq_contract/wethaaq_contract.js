@@ -129,6 +129,31 @@ frappe.ui.form.on("Wethaaq Contract", {
         });
     },
 
+    template(frm) {
+        if (!frm.doc.template) return;
+
+        frappe.call({
+            method: "wethaaq.wethaaq.doctype.wethaaq_contract.wethaaq_contract.fetch_clauses_from_template",
+            args: { template: frm.doc.template },
+            callback(r) {
+                if (!r.message || !r.message.length) return;
+
+                // Clear existing appendices and populate from template
+                frm.clear_table("appendices");
+                r.message.forEach((clause_row) => {
+                    let row = frm.add_child("appendices");
+                    row.clause = clause_row.clause;
+                    row.clause_content = clause_row.clause_content;
+                });
+                frm.refresh_field("appendices");
+                frappe.show_alert({
+                    message: __("{0} clause(s) fetched from template", [r.message.length]),
+                    indicator: "green"
+                });
+            }
+        });
+    },
+
     contract_type(frm) {
         // Clear template when type changes to prevent type mismatch
         frm.set_value("template", "");

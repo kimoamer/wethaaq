@@ -9,6 +9,9 @@
     "field_order": [
         "template_name",
         "contract_type",
+        "clauses_section",
+        "clauses",
+        "content_section",
         "content"
     ],
     "fields": [
@@ -28,15 +31,33 @@
             "reqd": 1
         },
         {
+            "fieldname": "clauses_section",
+            "fieldtype": "Section Break",
+            "label": "Template Clauses"
+        },
+        {
+            "fieldname": "clauses",
+            "fieldtype": "Table",
+            "label": "Clauses",
+            "options": "Wethaaq Template Clause"
+        },
+        {
+            "fieldname": "content_section",
+            "fieldtype": "Section Break",
+            "label": "Additional Content",
+            "collapsible": 1
+        },
+        {
             "fieldname": "content",
             "fieldtype": "Text Editor",
-            "label": "Content"
+            "label": "Content",
+            "description": "Optional. Extra content beyond the clauses above."
         }
     ],
     "grid_page_length": 50,
     "index_web_pages_for_search": 1,
     "links": [],
-    "modified": "2026-03-03 06:40:29.547258",
+    "modified": "2026-04-09 11:00:00.000000",
     "modified_by": "Administrator",
     "module": "Wethaaq",
     "name": "Wethaaq Contract Template",

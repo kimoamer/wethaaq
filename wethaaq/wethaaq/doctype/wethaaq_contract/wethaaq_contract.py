@@ -212,3 +212,24 @@ def has_permission_check(doc, ptype="read", user=None):
 def on_submit_hook(doc, method):
 	"""doc_events hook — placeholder for future cross-app on_submit logic."""
 	pass
+
+
+@frappe.whitelist()
+def fetch_clauses_from_template(template):
+	"""Returns the ordered list of clauses from a Wethaaq Contract Template.
+	Called by the contract form when a template is selected.
+	"""
+	if not template:
+		return []
+
+	template_doc = frappe.get_doc("Wethaaq Contract Template", template)
+	clauses = []
+	for row in template_doc.get("clauses", []):
+		clause_content = row.clause_content
+		if not clause_content and row.clause:
+			clause_content = frappe.db.get_value("Wethaaq Clause", row.clause, "content")
+		clauses.append({
+			"clause": row.clause,
+			"clause_content": clause_content or "",
+		})
+	return clauses
