@@ -156,6 +156,39 @@ Module: Wethaaq
     AGREEMENT
   </div>
 
+  <div class="contract-summary" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9;">
+    <h4 style="margin-top: 0; text-align: left; text-decoration: underline;">Contract Details / بيانات العقد</h4>
+    <table style="width: 100%; font-size: 14px; margin-bottom: 0;">
+      <tr>
+        <td style="width: 20%; padding-bottom: 8px;"><strong>Employee:</strong></td>
+        <td style="width: 30%; padding-bottom: 8px;">{{ doc.employee_name }}</td>
+        <td style="width: 20%; padding-bottom: 8px;"><strong>ID / Passport:</strong></td>
+        <td style="width: 30%; padding-bottom: 8px;">{{ doc.national_id or doc.passport_number or '-' }}</td>
+      </tr>
+      <tr>
+        <td style="padding-bottom: 8px;"><strong>Company:</strong></td>
+        <td style="padding-bottom: 8px;">{{ doc.company }}</td>
+        <td style="padding-bottom: 8px;"><strong>Legal Rep:</strong></td>
+        <td style="padding-bottom: 8px;">{{ doc.legal_representative or '-' }}<br><small>{{ doc.legal_representative_title or '' }}</small></td>
+      </tr>
+      <tr>
+        <td style="padding-bottom: 8px;"><strong>Designation:</strong></td>
+        <td style="padding-bottom: 8px;">{{ doc.designation or '-' }}</td>
+        <td style="padding-bottom: 8px;"><strong>Work Nature:</strong></td>
+        <td style="padding-bottom: 8px;">{{ doc.work_nature or '-' }}</td>
+      </tr>
+      <tr>
+        <td style="padding-bottom: 8px;"><strong>Salary:</strong></td>
+        <td style="padding-bottom: 8px;">{{ doc.get_formatted("basic_salary") }}</td>
+        <td style="padding-bottom: 8px;"><strong>Schedule:</strong></td>
+        <td style="padding-bottom: 8px;">
+          {% if doc.working_hours_per_day %}{{ doc.working_hours_per_day }} Hrs/Day {% endif %}
+          {% if doc.working_days_per_week %}({{ doc.working_days_per_week }} Days/Week){% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+
   <div class="contract-body">
     {% if doc.template %}
     {%- set template_html = frappe.db.get_value("Wethaaq Contract Template", doc.template, "content") -%}

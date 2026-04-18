@@ -7,32 +7,61 @@
     "editable_grid": 1,
     "engine": "InnoDB",
     "field_order": [
+        "employee_section",
         "employee",
         "employee_name",
+        "national_id",
+        "passport_number",
+        "cb_employee",
+        "governorate",
+        "current_address",
+        "company_contract_section",
         "job_offer",
+        "company",
+        "department",
+        "legal_representative",
+        "legal_representative_title",
+        "cb_company",
         "contract_type",
         "template",
         "template_name",
-        "company",
-        "department",
         "start_date",
         "end_date",
-        "cb1",
+        "job_details_section",
+        "designation",
+        "job_duties",
+        "work_schedule_section",
+        "work_nature",
+        "working_hours_per_day",
+        "working_days_per_week",
+        "cb_schedule",
+        "work_start_time",
+        "work_end_time",
+        "salary_section",
+        "basic_salary",
+        "currency",
+        "cb_salary",
+        "hourly_rate",
+        "status_section",
         "status",
         "termination_date",
         "termination_reason",
         "governing_law",
-        "basic_salary",
-        "currency",
         "sb1",
         "contract_file",
         "content_hash",
         "evidence_pack_uri",
+        "employee_signature",
         "amended_from",
         "appendices_section",
         "appendices"
     ],
     "fields": [
+        {
+            "fieldname": "employee_section",
+            "fieldtype": "Section Break",
+            "label": "Employee Details / بيانات الموظف"
+        },
         {
             "fieldname": "employee",
             "fieldtype": "Link",
@@ -50,11 +79,84 @@
             "read_only": 1
         },
         {
+            "fieldname": "national_id",
+            "fieldtype": "Data",
+            "label": "National ID / رقم البطاقة الشخصية",
+            "fetch_from": "employee.custom_national_id",
+            "read_only": 0
+        },
+        {
+            "fieldname": "passport_number",
+            "fieldtype": "Data",
+            "label": "Passport Number / رقم جواز السفر",
+            "fetch_from": "employee.passport_number",
+            "read_only": 0
+        },
+        {
+            "fieldname": "cb_employee",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "governorate",
+            "fieldtype": "Data",
+            "label": "Governorate / المحافظة",
+            "fetch_from": "employee.custom_governorate",
+            "read_only": 0
+        },
+        {
+            "fieldname": "current_address",
+            "fieldtype": "Small Text",
+            "label": "Residence Address / مقر الإقامة",
+            "fetch_from": "employee.current_address",
+            "read_only": 0
+        },
+        {
+            "fieldname": "company_contract_section",
+            "fieldtype": "Section Break",
+            "label": "Company & Contract / الشركة والعقد"
+        },
+        {
             "fieldname": "job_offer",
             "fieldtype": "Link",
             "label": "Job Offer",
             "options": "Job Offer",
             "in_list_view": 1
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "in_list_view": 0,
+            "in_standard_filter": 1,
+            "label": "Company",
+            "options": "Company",
+            "reqd": 1,
+            "default": ""
+        },
+        {
+            "fieldname": "department",
+            "fieldtype": "Link",
+            "in_list_view": 0,
+            "in_standard_filter": 1,
+            "label": "Department",
+            "options": "Department"
+        },
+        {
+            "fieldname": "legal_representative",
+            "fieldtype": "Data",
+            "label": "Legal Representative / الممثل القانونى",
+            "fetch_from": "company.custom_legal_representative",
+            "read_only": 0
+        },
+        {
+            "fieldname": "legal_representative_title",
+            "fieldtype": "Data",
+            "label": "Representative Title / صفة الممثل القانونى",
+            "fetch_from": "company.custom_legal_representative_title",
+            "read_only": 0
+        },
+        {
+            "fieldname": "cb_company",
+            "fieldtype": "Column Break"
         },
         {
             "fieldname": "contract_type",
@@ -78,24 +180,6 @@
             "read_only": 1
         },
         {
-            "fieldname": "company",
-            "fieldtype": "Link",
-            "in_list_view": 0,
-            "in_standard_filter": 1,
-            "label": "Company",
-            "options": "Company",
-            "reqd": 1,
-            "default": ""
-        },
-        {
-            "fieldname": "department",
-            "fieldtype": "Link",
-            "in_list_view": 0,
-            "in_standard_filter": 1,
-            "label": "Department",
-            "options": "Department"
-        },
-        {
             "fieldname": "start_date",
             "fieldtype": "Date",
             "in_list_view": 1,
@@ -108,8 +192,92 @@
             "label": "End Date"
         },
         {
-            "fieldname": "cb1",
+            "fieldname": "job_details_section",
+            "fieldtype": "Section Break",
+            "label": "Job Details / تفاصيل الوظيفة"
+        },
+        {
+            "fieldname": "designation",
+            "fieldtype": "Link",
+            "label": "Designation / الوظيفة",
+            "options": "Designation"
+        },
+        {
+            "fieldname": "job_duties",
+            "fieldtype": "Text Editor",
+            "label": "Job Duties / مهام العمل"
+        },
+        {
+            "fieldname": "work_schedule_section",
+            "fieldtype": "Section Break",
+            "label": "Work Schedule / جدول العمل"
+        },
+        {
+            "fieldname": "work_nature",
+            "fieldtype": "Select",
+            "label": "Work Nature / طبيعة العمل",
+            "options": "\nDaily / يومى\nWeekly / أسبوعى\nMonthly / شهرى"
+        },
+        {
+            "fieldname": "working_hours_per_day",
+            "fieldtype": "Float",
+            "label": "Working Hours Per Day / ساعات العمل اليومية",
+            "precision": "1"
+        },
+        {
+            "fieldname": "working_days_per_week",
+            "fieldtype": "Int",
+            "label": "Working Days Per Week / أيام العمل الأسبوعية"
+        },
+        {
+            "fieldname": "cb_schedule",
             "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "work_start_time",
+            "fieldtype": "Time",
+            "label": "Work Start Time / بداية العمل"
+        },
+        {
+            "fieldname": "work_end_time",
+            "fieldtype": "Time",
+            "label": "Work End Time / نهاية العمل"
+        },
+        {
+            "fieldname": "salary_section",
+            "fieldtype": "Section Break",
+            "label": "Salary Details / تفاصيل الأجر"
+        },
+        {
+            "fieldname": "basic_salary",
+            "fieldtype": "Currency",
+            "label": "Basic Salary / الأجر الأساسى",
+            "options": "currency"
+        },
+        {
+            "fieldname": "currency",
+            "fieldtype": "Link",
+            "label": "Currency",
+            "options": "Currency",
+            "default": "EGP"
+        },
+        {
+            "fieldname": "cb_salary",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "hourly_rate",
+            "fieldtype": "Currency",
+            "label": "Hourly Rate / الأجر بالساعة",
+            "options": "currency",
+            "read_only": 0,
+            "description": "Auto-calculated if salary and hours are set / يتم حسابه تلقائياً"
+        },
+        {
+            "fieldname": "status_section",
+            "fieldtype": "Section Break",
+            "label": "Status & Legal / الحالة والقانون",
+            "collapsible": 1
         },
         {
             "default": "Draft",
@@ -138,19 +306,6 @@
             "fieldname": "governing_law",
             "fieldtype": "Data",
             "label": "Governing Law"
-        },
-        {
-            "fieldname": "basic_salary",
-            "fieldtype": "Currency",
-            "label": "Basic Salary",
-            "options": "currency"
-        },
-        {
-            "fieldname": "currency",
-            "fieldtype": "Link",
-            "label": "Currency",
-            "options": "Currency",
-            "default": "SAR"
         },
         {
             "fieldname": "sb1",
@@ -206,7 +361,7 @@
     "index_web_pages_for_search": 1,
     "is_submittable": 1,
     "links": [],
-    "modified": "2026-03-03 06:40:28.809742",
+    "modified": "2026-04-18 14:00:00.000000",
     "modified_by": "Administrator",
     "module": "Wethaaq",
     "name": "Wethaaq Contract",

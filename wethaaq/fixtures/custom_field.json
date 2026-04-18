@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Company-custom_legal_representative",
+        "doctype": "Custom Field",
+        "dt": "Company",
+        "fieldname": "custom_legal_representative",
+        "fieldtype": "Data",
+        "label": "Legal Representative / الممثل القانونى",
+        "insert_after": "company_description",
+        "translatable": 1
+    },
+    {
+        "name": "Company-custom_legal_representative_title",
+        "doctype": "Custom Field",
+        "dt": "Company",
+        "fieldname": "custom_legal_representative_title",
+        "fieldtype": "Data",
+        "label": "Representative Title / صفة الممثل القانونى",
+        "insert_after": "custom_legal_representative",
+        "translatable": 1
+    },
+    {
+        "name": "Employee-custom_national_id",
+        "doctype": "Custom Field",
+        "dt": "Employee",
+        "fieldname": "custom_national_id",
+        "fieldtype": "Data",
+        "label": "National ID / رقم البطاقة الشخصية",
+        "insert_after": "passport_number",
+        "unique": 0
+    },
+    {
+        "name": "Employee-custom_governorate",
+        "doctype": "Custom Field",
+        "dt": "Employee",
+        "fieldname": "custom_governorate",
+        "fieldtype": "Data",
+        "label": "Governorate / المحافظة",
+        "insert_after": "current_address",
+        "translatable": 1
+    }
+]

@@ -87,6 +87,17 @@ app_include_icons = "wethaaq/icons/wethaaq/icons.svg"
 fixtures = [
 	{"dt": "Notification", "filters": [["module", "=", "Wethaaq"]]},
 	{"dt": "Workspace", "filters": [["module", "=", "Wethaaq"]]},
+	{
+		"dt": "Custom Field",
+		"filters": [
+			["name", "in", [
+				"Company-custom_legal_representative",
+				"Company-custom_legal_representative_title",
+				"Employee-custom_national_id",
+				"Employee-custom_governorate",
+			]]
+		]
+	},
 ]
 
 # Installation

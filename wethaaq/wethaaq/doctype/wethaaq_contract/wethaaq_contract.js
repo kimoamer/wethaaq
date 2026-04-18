@@ -163,4 +163,46 @@ frappe.ui.form.on("Wethaaq Contract", {
         // Clear department if company changes (avoid cross-company mismatch)
         frm.set_value("department", "");
     },
+
+    job_offer(frm) {
+        if (!frm.doc.job_offer) return;
+        frappe.db.get_doc("Job Offer", frm.doc.job_offer).then(doc => {
+            if (doc.designation) frm.set_value("designation", doc.designation);
+            if (doc.company) frm.set_value("company", doc.company);
+        });
+    },
+
+    basic_salary(frm) {
+        frm.trigger("calculate_hourly_rate");
+    },
+    
+    working_hours_per_day(frm) {
+        frm.trigger("calculate_hourly_rate");
+    },
+    
+    working_days_per_week(frm) {
+        frm.trigger("calculate_hourly_rate");
+    },
+    
+    work_nature(frm) {
+        frm.trigger("calculate_hourly_rate");
+    },
+
+    calculate_hourly_rate(frm) {
+        if (frm.doc.basic_salary && frm.doc.working_hours_per_day && frm.doc.working_days_per_week) {
+            let weekly_hours = frm.doc.working_hours_per_day * frm.doc.working_days_per_week;
+            let hourly_rate = 0;
+            
+            // "Daily / يومى", "Weekly / أسبوعى", "Monthly / شهرى"
+            if (frm.doc.work_nature && frm.doc.work_nature.includes("Daily")) {
+                hourly_rate = frm.doc.basic_salary / frm.doc.working_hours_per_day;
+            } else if (frm.doc.work_nature && frm.doc.work_nature.includes("Weekly")) {
+                hourly_rate = frm.doc.basic_salary / weekly_hours;
+            } else { 
+                // Monthly default
+                hourly_rate = (frm.doc.basic_salary * 12) / (52 * weekly_hours);
+            }
+            frm.set_value("hourly_rate", flt(hourly_rate, 2));
+        }
+    }
 });
