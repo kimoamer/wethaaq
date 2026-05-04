@@ -1,0 +1,33 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.status == 'Active' and doc.end_date",
+ "creation": "2026-05-03 13:43:29.813035",
+ "date_changed": "end_date",
+ "days_in_advance": 90,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Wethaaq Contract",
+ "enabled": 1,
+ "event": "Days Before",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p>Dear HR Team,</p><p>The contract for employee <b>{{ doc.employee }}</b> is expiring in 3 months on <b>{{ frappe.utils.formatdate(doc.end_date) }}</b>. Please initiate the review process.</p>",
+ "message_type": "HTML",
+ "modified": "2026-05-03 13:43:29.813035",
+ "modified_by": "Administrator",
+ "module": "Wethaaq",
+ "name": "Wethaaq Contract Expiry 3 Months",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "HR Manager"
+  },
+  {
+   "receiver_by_role": "HR User"
+  }
+ ],
+ "send_system_notification": 1,
+ "send_to_all_assignees": 1,
+ "subject": "Contract Expiring in 3 Months: {{ doc.name }}"
+}
