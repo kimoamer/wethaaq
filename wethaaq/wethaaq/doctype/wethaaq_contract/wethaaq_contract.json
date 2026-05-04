@@ -1,415 +1,413 @@
 {
-    "actions": [],
-    "allow_rename": 1,
-    "autoname": "format:CONT-{####}",
-    "creation": "2026-03-03 05:56:33.133817",
-    "doctype": "DocType",
-    "editable_grid": 1,
-    "engine": "InnoDB",
-    "field_order": [
-        "employee_section",
-        "employee",
-        "employee_name",
-        "national_id",
-        "passport_number",
-        "cb_employee",
-        "governorate",
-        "current_address",
-        "company_contract_section",
-        "job_offer",
-        "company",
-        "department",
-        "legal_representative",
-        "legal_representative_title",
-        "cb_company",
-        "contract_type",
-        "template",
-        "template_name",
-        "start_date",
-        "end_date",
-        "job_details_section",
-        "designation",
-        "job_duties",
-        "work_schedule_section",
-        "work_nature",
-        "working_hours_per_day",
-        "working_days_per_week",
-        "cb_schedule",
-        "work_start_time",
-        "work_end_time",
-        "salary_section",
-        "basic_salary",
-        "currency",
-        "cb_salary",
-        "hourly_rate",
-        "status_section",
-        "status",
-        "termination_date",
-        "termination_reason",
-        "governing_law",
-        "sb1",
-        "contract_file",
-        "content_hash",
-        "evidence_pack_uri",
-        "employee_signature",
-        "amended_from",
-        "appendices_section",
-        "appendices"
-    ],
-    "fields": [
-        {
-            "fieldname": "employee_section",
-            "fieldtype": "Section Break",
-            "label": "Employee Details / بيانات الموظف"
-        },
-        {
-            "fieldname": "employee",
-            "fieldtype": "Link",
-            "in_list_view": 1,
-            "label": "Employee",
-            "options": "Employee",
-            "reqd": 1
-        },
-        {
-            "fieldname": "employee_name",
-            "fieldtype": "Data",
-            "in_list_view": 1,
-            "label": "Employee Name",
-            "fetch_from": "employee.employee_name",
-            "read_only": 1
-        },
-        {
-            "fieldname": "national_id",
-            "fieldtype": "Data",
-            "label": "National ID / رقم البطاقة الشخصية",
-            "fetch_from": "employee.custom_national_id",
-            "read_only": 0
-        },
-        {
-            "fieldname": "passport_number",
-            "fieldtype": "Data",
-            "label": "Passport Number / رقم جواز السفر",
-            "fetch_from": "employee.passport_number",
-            "read_only": 0
-        },
-        {
-            "fieldname": "cb_employee",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "governorate",
-            "fieldtype": "Data",
-            "label": "Governorate / المحافظة",
-            "fetch_from": "employee.custom_governorate",
-            "read_only": 0
-        },
-        {
-            "fieldname": "current_address",
-            "fieldtype": "Small Text",
-            "label": "Residence Address / مقر الإقامة",
-            "fetch_from": "employee.current_address",
-            "read_only": 0
-        },
-        {
-            "fieldname": "company_contract_section",
-            "fieldtype": "Section Break",
-            "label": "Company & Contract / الشركة والعقد"
-        },
-        {
-            "fieldname": "job_offer",
-            "fieldtype": "Link",
-            "label": "Job Offer",
-            "options": "Job Offer",
-            "in_list_view": 1
-        },
-        {
-            "fieldname": "company",
-            "fieldtype": "Link",
-            "in_list_view": 0,
-            "in_standard_filter": 1,
-            "label": "Company",
-            "options": "Company",
-            "reqd": 1,
-            "default": ""
-        },
-        {
-            "fieldname": "department",
-            "fieldtype": "Link",
-            "in_list_view": 0,
-            "in_standard_filter": 1,
-            "label": "Department",
-            "options": "Department"
-        },
-        {
-            "fieldname": "legal_representative",
-            "fieldtype": "Data",
-            "label": "Legal Representative / الممثل القانونى",
-            "fetch_from": "company.custom_legal_representative",
-            "read_only": 0
-        },
-        {
-            "fieldname": "legal_representative_title",
-            "fieldtype": "Data",
-            "label": "Representative Title / صفة الممثل القانونى",
-            "fetch_from": "company.custom_legal_representative_title",
-            "read_only": 0
-        },
-        {
-            "fieldname": "cb_company",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "contract_type",
-            "fieldtype": "Select",
-            "in_list_view": 1,
-            "label": "Contract Type",
-            "options": "Fixed\nOpen\nIntern\nAddon\nOther",
-            "reqd": 1
-        },
-        {
-            "fieldname": "template",
-            "fieldtype": "Link",
-            "label": "Template",
-            "options": "Wethaaq Contract Template"
-        },
-        {
-            "fieldname": "template_name",
-            "fieldtype": "Data",
-            "label": "Template Name",
-            "fetch_from": "template.template_name",
-            "read_only": 1
-        },
-        {
-            "fieldname": "start_date",
-            "fieldtype": "Date",
-            "in_list_view": 1,
-            "label": "Start Date",
-            "reqd": 1
-        },
-        {
-            "fieldname": "end_date",
-            "fieldtype": "Date",
-            "label": "End Date"
-        },
-        {
-            "fieldname": "job_details_section",
-            "fieldtype": "Section Break",
-            "label": "Job Details / تفاصيل الوظيفة"
-        },
-        {
-            "fieldname": "designation",
-            "fieldtype": "Link",
-            "label": "Designation / الوظيفة",
-            "options": "Designation"
-        },
-        {
-            "fieldname": "job_duties",
-            "fieldtype": "Text Editor",
-            "label": "Job Duties / مهام العمل"
-        },
-        {
-            "fieldname": "work_schedule_section",
-            "fieldtype": "Section Break",
-            "label": "Work Schedule / جدول العمل"
-        },
-        {
-            "fieldname": "work_nature",
-            "fieldtype": "Select",
-            "label": "Work Nature / طبيعة العمل",
-            "options": "\nDaily / يومى\nWeekly / أسبوعى\nMonthly / شهرى"
-        },
-        {
-            "fieldname": "working_hours_per_day",
-            "fieldtype": "Float",
-            "label": "Working Hours Per Day / ساعات العمل اليومية",
-            "precision": "1"
-        },
-        {
-            "fieldname": "working_days_per_week",
-            "fieldtype": "Int",
-            "label": "Working Days Per Week / أيام العمل الأسبوعية"
-        },
-        {
-            "fieldname": "cb_schedule",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "work_start_time",
-            "fieldtype": "Time",
-            "label": "Work Start Time / بداية العمل"
-        },
-        {
-            "fieldname": "work_end_time",
-            "fieldtype": "Time",
-            "label": "Work End Time / نهاية العمل"
-        },
-        {
-            "fieldname": "salary_section",
-            "fieldtype": "Section Break",
-            "label": "Salary Details / تفاصيل الأجر"
-        },
-        {
-            "fieldname": "basic_salary",
-            "fieldtype": "Currency",
-            "label": "Basic Salary / الأجر الأساسى",
-            "options": "currency"
-        },
-        {
-            "fieldname": "currency",
-            "fieldtype": "Link",
-            "label": "Currency",
-            "options": "Currency",
-            "default": "EGP"
-        },
-        {
-            "fieldname": "cb_salary",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "hourly_rate",
-            "fieldtype": "Currency",
-            "label": "Hourly Rate / الأجر بالساعة",
-            "options": "currency",
-            "read_only": 0,
-            "description": "Auto-calculated if salary and hours are set / يتم حسابه تلقائياً"
-        },
-        {
-            "fieldname": "status_section",
-            "fieldtype": "Section Break",
-            "label": "Status & Legal / الحالة والقانون",
-            "collapsible": 1
-        },
-        {
-            "default": "Draft",
-            "fieldname": "status",
-            "fieldtype": "Select",
-            "in_list_view": 1,
-            "in_standard_filter": 1,
-            "label": "Status",
-            "options": "Draft\nReview\nSigned\nActive\nExpired\nTerminated\nArchived"
-        },
-        {
-            "fieldname": "termination_date",
-            "fieldtype": "Date",
-            "label": "Termination Date",
-            "depends_on": "eval:doc.status === 'Terminated'",
-            "read_only": 1
-        },
-        {
-            "fieldname": "termination_reason",
-            "fieldtype": "Small Text",
-            "label": "Termination Reason",
-            "depends_on": "eval:doc.status === 'Terminated'",
-            "read_only": 1
-        },
-        {
-            "fieldname": "governing_law",
-            "fieldtype": "Data",
-            "label": "Governing Law"
-        },
-        {
-            "fieldname": "sb1",
-            "fieldtype": "Section Break",
-            "label": "File & Signature"
-        },
-        {
-            "fieldname": "contract_file",
-            "fieldtype": "Attach",
-            "label": "Contract File"
-        },
-        {
-            "fieldname": "content_hash",
-            "fieldtype": "Data",
-            "label": "Content Hash",
-            "read_only": 1
-        },
-        {
-            "fieldname": "evidence_pack_uri",
-            "fieldtype": "Data",
-            "label": "Evidence Pack URI",
-            "read_only": 1
-        },
-        {
-            "fieldname": "employee_signature",
-            "fieldtype": "Signature",
-            "label": "Employee Signature",
-            "read_only": 1
-        },
-        {
-            "fieldname": "amended_from",
-            "fieldtype": "Link",
-            "label": "Amended From",
-            "no_copy": 1,
-            "options": "Wethaaq Contract",
-            "print_hide": 1,
-            "read_only": 1,
-            "search_index": 1
-        },
-        {
-            "fieldname": "appendices_section",
-            "fieldtype": "Section Break",
-            "label": "Appendices and Clauses"
-        },
-        {
-            "fieldname": "appendices",
-            "fieldtype": "Table",
-            "label": "Appendices",
-            "options": "Wethaaq Contract Appendix"
-        }
-    ],
-    "grid_page_length": 50,
-    "index_web_pages_for_search": 1,
-    "is_submittable": 1,
-    "links": [],
-    "modified": "2026-04-18 14:00:00.000000",
-    "modified_by": "Administrator",
-    "module": "Wethaaq",
-    "name": "Wethaaq Contract",
-    "owner": "Administrator",
-    "permissions": [
-        {
-            "cancel": 1,
-            "create": 1,
-            "delete": 1,
-            "email": 1,
-            "export": 1,
-            "print": 1,
-            "read": 1,
-            "report": 1,
-            "role": "System Manager",
-            "share": 1,
-            "submit": 1,
-            "write": 1
-        },
-        {
-            "amend": 1,
-            "cancel": 1,
-            "create": 1,
-            "delete": 1,
-            "email": 1,
-            "export": 1,
-            "print": 1,
-            "read": 1,
-            "report": 1,
-            "role": "HR Manager",
-            "share": 1,
-            "submit": 1,
-            "write": 1
-        },
-        {
-            "create": 1,
-            "email": 1,
-            "print": 1,
-            "read": 1,
-            "report": 1,
-            "role": "HR User",
-            "write": 1
-        }
-    ],
-    "row_format": "Dynamic",
-    "rows_threshold_for_grid_search": 20,
-    "sort_field": "modified",
-    "sort_order": "DESC",
-    "states": [],
-    "track_changes": 1
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-03-03 05:56:33.133817",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_section",
+  "naming_series",
+  "employee",
+  "employee_name",
+  "national_id",
+  "passport_number",
+  "cb_employee",
+  "governorate",
+  "current_address",
+  "company_contract_section",
+  "job_offer",
+  "company",
+  "department",
+  "legal_representative",
+  "legal_representative_title",
+  "cb_company",
+  "contract_type",
+  "template",
+  "template_name",
+  "start_date",
+  "end_date",
+  "job_details_section",
+  "designation",
+  "job_duties",
+  "work_schedule_section",
+  "work_nature",
+  "working_hours_per_day",
+  "working_days_per_week",
+  "cb_schedule",
+  "work_start_time",
+  "work_end_time",
+  "salary_section",
+  "basic_salary",
+  "currency",
+  "cb_salary",
+  "hourly_rate",
+  "status_section",
+  "status",
+  "termination_date",
+  "termination_reason",
+  "governing_law",
+  "sb1",
+  "contract_file",
+  "content_hash",
+  "evidence_pack_uri",
+  "employee_signature",
+  "amended_from",
+  "appendices_section",
+  "appendices"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Details / \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0648\u0638\u0641"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.custom_national_id",
+   "fieldname": "national_id",
+   "fieldtype": "Data",
+   "label": "National ID / \u0631\u0642\u0645 \u0627\u0644\u0628\u0637\u0627\u0642\u0629 \u0627\u0644\u0634\u062e\u0635\u064a\u0629"
+  },
+  {
+   "fetch_from": "employee.passport_number",
+   "fieldname": "passport_number",
+   "fieldtype": "Data",
+   "label": "Passport Number / \u0631\u0642\u0645 \u062c\u0648\u0627\u0632 \u0627\u0644\u0633\u0641\u0631"
+  },
+  {
+   "fieldname": "cb_employee",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.custom_governorate",
+   "fieldname": "governorate",
+   "fieldtype": "Data",
+   "label": "Governorate / \u0627\u0644\u0645\u062d\u0627\u0641\u0638\u0629"
+  },
+  {
+   "fetch_from": "employee.current_address",
+   "fieldname": "current_address",
+   "fieldtype": "Small Text",
+   "label": "Residence Address / \u0645\u0642\u0631 \u0627\u0644\u0625\u0642\u0627\u0645\u0629"
+  },
+  {
+   "fieldname": "company_contract_section",
+   "fieldtype": "Section Break",
+   "label": "Company & Contract / \u0627\u0644\u0634\u0631\u0643\u0629 \u0648\u0627\u0644\u0639\u0642\u062f"
+  },
+  {
+   "fieldname": "job_offer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Job Offer",
+   "options": "Job Offer"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fetch_from": "company.custom_legal_representative",
+   "fieldname": "legal_representative",
+   "fieldtype": "Data",
+   "label": "Legal Representative / \u0627\u0644\u0645\u0645\u062b\u0644 \u0627\u0644\u0642\u0627\u0646\u0648\u0646\u0649"
+  },
+  {
+   "fetch_from": "company.custom_legal_representative_title",
+   "fieldname": "legal_representative_title",
+   "fieldtype": "Data",
+   "label": "Representative Title / \u0635\u0641\u0629 \u0627\u0644\u0645\u0645\u062b\u0644 \u0627\u0644\u0642\u0627\u0646\u0648\u0646\u0649"
+  },
+  {
+   "fieldname": "cb_company",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contract_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Contract Type",
+   "options": "Fixed\nOpen\nIntern\nAddon\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "template",
+   "fieldtype": "Link",
+   "label": "Template",
+   "options": "Wethaaq Contract Template"
+  },
+  {
+   "fetch_from": "template.template_name",
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "label": "Template Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "job_details_section",
+   "fieldtype": "Section Break",
+   "label": "Job Details / \u062a\u0641\u0627\u0635\u064a\u0644 \u0627\u0644\u0648\u0638\u064a\u0641\u0629"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation / \u0627\u0644\u0648\u0638\u064a\u0641\u0629",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "job_duties",
+   "fieldtype": "Text Editor",
+   "label": "Job Duties / \u0645\u0647\u0627\u0645 \u0627\u0644\u0639\u0645\u0644"
+  },
+  {
+   "fieldname": "work_schedule_section",
+   "fieldtype": "Section Break",
+   "label": "Work Schedule / \u062c\u062f\u0648\u0644 \u0627\u0644\u0639\u0645\u0644"
+  },
+  {
+   "fieldname": "work_nature",
+   "fieldtype": "Select",
+   "label": "Work Nature / \u0637\u0628\u064a\u0639\u0629 \u0627\u0644\u0639\u0645\u0644",
+   "options": "\nDaily / \u064a\u0648\u0645\u0649\nWeekly / \u0623\u0633\u0628\u0648\u0639\u0649\nMonthly / \u0634\u0647\u0631\u0649"
+  },
+  {
+   "fieldname": "working_hours_per_day",
+   "fieldtype": "Float",
+   "label": "Working Hours Per Day / \u0633\u0627\u0639\u0627\u062a \u0627\u0644\u0639\u0645\u0644 \u0627\u0644\u064a\u0648\u0645\u064a\u0629",
+   "precision": "1"
+  },
+  {
+   "fieldname": "working_days_per_week",
+   "fieldtype": "Int",
+   "label": "Working Days Per Week / \u0623\u064a\u0627\u0645 \u0627\u0644\u0639\u0645\u0644 \u0627\u0644\u0623\u0633\u0628\u0648\u0639\u064a\u0629"
+  },
+  {
+   "fieldname": "cb_schedule",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "work_start_time",
+   "fieldtype": "Time",
+   "label": "Work Start Time / \u0628\u062f\u0627\u064a\u0629 \u0627\u0644\u0639\u0645\u0644"
+  },
+  {
+   "fieldname": "work_end_time",
+   "fieldtype": "Time",
+   "label": "Work End Time / \u0646\u0647\u0627\u064a\u0629 \u0627\u0644\u0639\u0645\u0644"
+  },
+  {
+   "fieldname": "salary_section",
+   "fieldtype": "Section Break",
+   "label": "Salary Details / \u062a\u0641\u0627\u0635\u064a\u0644 \u0627\u0644\u0623\u062c\u0631"
+  },
+  {
+   "fieldname": "basic_salary",
+   "fieldtype": "Currency",
+   "label": "Basic Salary / \u0627\u0644\u0623\u062c\u0631 \u0627\u0644\u0623\u0633\u0627\u0633\u0649",
+   "options": "currency"
+  },
+  {
+   "default": "EGP",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "cb_salary",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Auto-calculated if salary and hours are set / \u064a\u062a\u0645 \u062d\u0633\u0627\u0628\u0647 \u062a\u0644\u0642\u0627\u0626\u064a\u0627\u064b",
+   "fieldname": "hourly_rate",
+   "fieldtype": "Currency",
+   "label": "Hourly Rate / \u0627\u0644\u0623\u062c\u0631 \u0628\u0627\u0644\u0633\u0627\u0639\u0629",
+   "options": "currency"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Status & Legal / \u0627\u0644\u062d\u0627\u0644\u0629 \u0648\u0627\u0644\u0642\u0627\u0646\u0648\u0646"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nReview\nSigned\nActive\nExpired\nTerminated\nArchived"
+  },
+  {
+   "depends_on": "eval:doc.status === 'Terminated'",
+   "fieldname": "termination_date",
+   "fieldtype": "Date",
+   "label": "Termination Date",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.status === 'Terminated'",
+   "fieldname": "termination_reason",
+   "fieldtype": "Small Text",
+   "label": "Termination Reason",
+   "read_only": 1
+  },
+  {
+   "fieldname": "governing_law",
+   "fieldtype": "Data",
+   "label": "Governing Law"
+  },
+  {
+   "fieldname": "sb1",
+   "fieldtype": "Section Break",
+   "label": "File & Signature"
+  },
+  {
+   "fieldname": "contract_file",
+   "fieldtype": "Attach",
+   "label": "Contract File"
+  },
+  {
+   "fieldname": "content_hash",
+   "fieldtype": "Data",
+   "label": "Content Hash",
+   "read_only": 1
+  },
+  {
+   "fieldname": "evidence_pack_uri",
+   "fieldtype": "Data",
+   "label": "Evidence Pack URI",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_signature",
+   "fieldtype": "Signature",
+   "label": "Employee Signature",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Wethaaq Contract",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "appendices_section",
+   "fieldtype": "Section Break",
+   "label": "Appendices and Clauses"
+  },
+  {
+   "fieldname": "appendices",
+   "fieldtype": "Table",
+   "label": "Appendices",
+   "options": "Wethaaq Contract Appendix"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "Contract-"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-04 19:53:38.037317",
+ "modified_by": "farisamer2020@gmail.com",
+ "module": "Wethaaq",
+ "name": "Wethaaq Contract",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }
