@@ -138,14 +138,6 @@ fixtures = [
 # -----------
 # Permissions evaluated in scripted ways
 
-permission_query_conditions = {
-	"Wethaaq Contract": "wethaaq.wethaaq.doctype.wethaaq_contract.wethaaq_contract.get_permission_query_conditions",
-}
-
-has_permission = {
-	"Wethaaq Contract": "wethaaq.wethaaq.doctype.wethaaq_contract.wethaaq_contract.has_permission_check",
-}
-
 # DocType Class
 # ---------------
 # Override standard doctype classes

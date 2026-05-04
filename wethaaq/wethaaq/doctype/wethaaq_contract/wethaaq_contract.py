@@ -153,60 +153,7 @@ class WethaaqContract(Document):
 		frappe.logger("wethaaq.hris").info(message)
 
 
-# ── Row-Level Permission Helpers ───────────────────────────────────
 
-
-def get_permission_query_conditions(user=None):
-	"""Restricts Wethaaq Contract list to:
-	- System Manager / HR Manager: all contracts
-	- HR User: only contracts in their own department
-	- Anyone else: no access
-	"""
-	if not user:
-		user = frappe.session.user
-
-	roles = frappe.get_roles(user)
-
-	if "System Manager" in roles or "HR Manager" in roles:
-		return ""  # No restriction — full visibility
-
-	if "HR User" in roles:
-		department = frappe.db.get_value("Employee", {"user_id": user}, "department")
-		if department:
-			return f"`tabWethaaq Contract`.`department` = {frappe.db.escape(department)}"
-		# HR User exists but has no linked Employee record — no access
-		return "1=0"
-
-	# Self-service: employees can see their own contracts
-	employee_name = frappe.db.get_value("Employee", {"user_id": user}, "name")
-	if employee_name:
-		return f"`tabWethaaq Contract`.`employee` = {frappe.db.escape(employee_name)}"
-
-	return "1=0"
-
-
-def has_permission_check(doc, ptype="read", user=None):
-	"""Fine-grained document-level permission check."""
-	if not user:
-		user = frappe.session.user
-
-	roles = frappe.get_roles(user)
-
-	if "System Manager" in roles or "HR Manager" in roles:
-		return True
-
-	if "HR User" in roles:
-		employee = frappe.db.get_value("Employee", {"user_id": user}, ["name", "department"], as_dict=True)
-		if employee and employee.department == doc.department:
-			return True
-		return False
-
-	# Employee Self-Service: read + print only
-	employee_name = frappe.db.get_value("Employee", {"user_id": user}, "name")
-	if employee_name and employee_name == doc.employee:
-		return ptype in {"read", "print", "email"}
-
-	return False
 
 
 def on_submit_hook(doc, method):
