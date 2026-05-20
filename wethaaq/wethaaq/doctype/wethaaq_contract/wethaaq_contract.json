@@ -20,6 +20,7 @@
   "job_offer",
   "company",
   "department",
+  "company_representative",
   "legal_representative",
   "legal_representative_title",
   "cb_company",
@@ -72,21 +73,17 @@
    "reqd": 1
   },
   {
-   "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Employee Name",
-   "read_only": 1
+   "label": "Employee Name"
   },
   {
-   "fetch_from": "employee.custom_national_id",
    "fieldname": "national_id",
    "fieldtype": "Data",
    "label": "National ID / \u0631\u0642\u0645 \u0627\u0644\u0628\u0637\u0627\u0642\u0629 \u0627\u0644\u0634\u062e\u0635\u064a\u0629"
   },
   {
-   "fetch_from": "employee.passport_number",
    "fieldname": "passport_number",
    "fieldtype": "Data",
    "label": "Passport Number / \u0631\u0642\u0645 \u062c\u0648\u0627\u0632 \u0627\u0644\u0633\u0641\u0631"
@@ -96,13 +93,11 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "employee.custom_governorate",
    "fieldname": "governorate",
    "fieldtype": "Data",
    "label": "Governorate / \u0627\u0644\u0645\u062d\u0627\u0641\u0638\u0629"
   },
   {
-   "fetch_from": "employee.current_address",
    "fieldname": "current_address",
    "fieldtype": "Small Text",
    "label": "Residence Address / \u0645\u0642\u0631 \u0627\u0644\u0625\u0642\u0627\u0645\u0629"
@@ -135,13 +130,16 @@
    "options": "Department"
   },
   {
-   "fetch_from": "company.custom_legal_representative",
+   "fieldname": "company_representative",
+   "fieldtype": "Select",
+   "label": "Company Representative / ممثل الشركة"
+  },
+  {
    "fieldname": "legal_representative",
    "fieldtype": "Data",
    "label": "Legal Representative / \u0627\u0644\u0645\u0645\u062b\u0644 \u0627\u0644\u0642\u0627\u0646\u0648\u0646\u0649"
   },
   {
-   "fetch_from": "company.custom_legal_representative_title",
    "fieldname": "legal_representative_title",
    "fieldtype": "Data",
    "label": "Representative Title / \u0635\u0641\u0629 \u0627\u0644\u0645\u0645\u062b\u0644 \u0627\u0644\u0642\u0627\u0646\u0648\u0646\u0649"
@@ -165,11 +163,9 @@
    "options": "Wethaaq Contract Template"
   },
   {
-   "fetch_from": "template.template_name",
    "fieldname": "template_name",
    "fieldtype": "Data",
-   "label": "Template Name",
-   "read_only": 1
+   "label": "Template Name"
   },
   {
    "fieldname": "start_date",

@@ -2,7 +2,7 @@ app_name = "wethaaq"
 app_title = "Wethaaq"
 app_publisher = "Hak3em"
 app_description = "HRIS Contract Management System"
-app_email = "a.amer@devoneers.org"
+app_email = "a.amer@innomate-tech.com"
 app_license = "mit"
 app_version = "0.1.0"
 
@@ -93,6 +93,7 @@ fixtures = [
 			["name", "in", [
 				"Company-custom_legal_representative",
 				"Company-custom_legal_representative_title",
+				"Company-custom_representatives",
 				"Employee-custom_national_id",
 				"Employee-custom_governorate",
 			]]
