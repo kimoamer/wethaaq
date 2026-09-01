@@ -1,10 +1,31 @@
 # Copyright (c) 2026, Hak3em and contributors
 # For license information, please see license.txt
 
+import hashlib
+
 import frappe
 from frappe import _
 from frappe.model.document import Document
-import hashlib
+from frappe.utils import flt, getdate, today
+
+
+SALARY_ASSIGNMENT_FIELD_MAP = {
+	"base": "basic_salary",
+	"variable": "variables",
+	"r_t_allowance": "representative_transportation_allowance",
+	"other_expenses": "other_expenses",
+	"car_rent": "car_rent",
+	"safe_allowance": "safe_allowance",
+}
+
+SALARY_ALLOWANCE_LABELS = {
+	"representative_transportation_allowance": "بدل انتقال مندوب",
+	"other_expenses": "مصروفات أخرى",
+	"car_rent": "إيجار سيارة",
+	"safe_allowance": "بدل خزنة",
+}
+
+SALARY_CLAUSE_NAME = "المادة الثانية: المرتب والبدلات والاستقطاعات"
 
 
 class WethaaqContract(Document):
@@ -13,6 +34,8 @@ class WethaaqContract(Document):
 	def validate(self):
 		self.validate_dates()
 		self.validate_active_employee()
+		self.sync_salary_from_assignment()
+		self.render_salary_clause_snapshot()
 
 	def before_submit(self):
 		self.freeze_contract_version()
@@ -34,33 +57,118 @@ class WethaaqContract(Document):
 			frappe.throw(_("End Date cannot be before Start Date"))
 
 	def validate_active_employee(self):
-		"""Ensures the linked employee is in Active status, not just that they exist.
-		(Frappe already validates Link existence; this adds the status check.)
-		"""
+		"""Ensures the linked employee is in Active status, not just that they exist."""
 		employee_status = frappe.db.get_value("Employee", self.employee, "status")
 		if employee_status and employee_status != "Active":
 			frappe.throw(_("Employee {0} is not Active (current status: {1})").format(
 				self.employee, employee_status
 			))
 
+	def sync_salary_from_assignment(self):
+		"""Copy salary values effective on the contract start date into the contract.
+
+		The approved Salary Structure Assignment remains the source of truth while the
+		contract stores a snapshot so the legal document does not change later when a
+		new assignment is created.
+		"""
+		if not self.employee:
+			return
+
+		details = _get_salary_assignment_details(
+			employee=self.employee,
+			reference_date=self.start_date,
+			company=self.company,
+		)
+		if not details:
+			return
+
+		self.salary_structure_assignment = details.get("salary_structure_assignment")
+		for target_field in SALARY_ASSIGNMENT_FIELD_MAP.values():
+			self.set(target_field, flt(details.get(target_field)))
+
+		if details.get("currency"):
+			self.currency = details.get("currency")
+
+	def render_salary_clause_snapshot(self):
+		"""Resolve salary placeholders and inject only non-zero allowance lines.
+
+		The original Wethaaq Clause is re-read on every Draft validation to avoid
+		duplicating generated allowance lines. The rendered HTML is then stored in the
+		contract appendix as the legal snapshot that will be printed and hashed.
+		"""
+		for row in self.get("appendices", []):
+			if row.clause != SALARY_CLAUSE_NAME:
+				continue
+
+			source_html = frappe.db.get_value("Wethaaq Clause", row.clause, "content") or row.clause_content or ""
+			if not source_html:
+				continue
+
+			# The current legal wording explicitly contains this incentive phrase.
+			# Remove it entirely when the incentive is zero instead of printing "0".
+			if flt(self.variables) <= 0:
+				source_html = source_html.replace(
+					" وحافز {{variables}} جنيها مصريا مرتبط بتقييم الاداء",
+					"",
+				)
+
+			allowance_lines = []
+			for fieldname, label in SALARY_ALLOWANCE_LABELS.items():
+				amount = flt(self.get(fieldname))
+				if amount <= 0:
+					continue
+				allowance_lines.append(
+					'<p class="ql-direction-rtl" style="text-align: right;">'
+					f"كما يستحق العامل {label} قدره {_format_amount(amount)} جنيها مصريا."
+					"</p>"
+				)
+
+			# Put allowance lines directly after item 1, before deductions/payment terms.
+			if allowance_lines and "</p>" in source_html:
+				first_paragraph_end = source_html.find("</p>") + len("</p>")
+				source_html = (
+					source_html[:first_paragraph_end]
+					+ "".join(allowance_lines)
+					+ source_html[first_paragraph_end:]
+				)
+
+			context = {
+				"doc": self,
+				"basic_salary": _format_amount(self.basic_salary),
+				"variables": _format_amount(self.variables),
+				"representative_transportation_allowance": _format_amount(self.representative_transportation_allowance),
+				"other_expenses": _format_amount(self.other_expenses),
+				"car_rent": _format_amount(self.car_rent),
+				"safe_allowance": _format_amount(self.safe_allowance),
+			}
+			row.clause_content = frappe.render_template(source_html, context)
+
 	# ── Contract Integrity ─────────────────────────────────────────
 
 	def freeze_contract_version(self):
-		"""Generates a SHA-256 content hash over all material contract fields
-		to simulate document integrity tracking (ISO 15489).
-		"""
+		"""Generates a SHA-256 content hash over all material contract fields."""
 		appendix_ids = "|".join(
 			sorted(row.clause for row in self.appendices if row.clause)
+		)
+		appendix_content = "|".join(
+			row.clause_content or "" for row in self.appendices if row.clause
 		)
 		content_str = (
 			f"{self.employee}"
 			f"|{self.start_date}"
 			f"|{self.end_date}"
+			f"|{self.salary_structure_assignment or ''}"
 			f"|{self.basic_salary}"
+			f"|{self.variables}"
+			f"|{self.representative_transportation_allowance}"
+			f"|{self.other_expenses}"
+			f"|{self.car_rent}"
+			f"|{self.safe_allowance}"
 			f"|{self.template}"
 			f"|{self.governing_law or ''}"
 			f"|{self.job_offer or ''}"
 			f"|{appendix_ids}"
+			f"|{appendix_content}"
 		)
 		self.content_hash = hashlib.sha256(content_str.encode("utf-8")).hexdigest()
 
@@ -68,9 +176,7 @@ class WethaaqContract(Document):
 
 	@frappe.whitelist()
 	def send_for_esignature(self):
-		"""Dispatches contract securely via email to the employee for signature.
-		Updates status to indicate the document is out for signing.
-		"""
+		"""Dispatches contract securely via email to the employee for signature."""
 		allowed_statuses = {"Review", "Draft", "Active"}
 		if self.status not in allowed_statuses:
 			frappe.throw(
@@ -83,7 +189,7 @@ class WethaaqContract(Document):
 		employee_email = frappe.db.get_value("Employee", self.employee, "company_email")
 		if not employee_email:
 			employee_email = frappe.db.get_value("Employee", self.employee, "personal_email")
-			
+
 		if not employee_email:
 			frappe.throw(_("Employee must have a Company Email or Personal Email set to receive the contract."))
 
@@ -91,7 +197,6 @@ class WethaaqContract(Document):
 		site_url = frappe.utils.get_url()
 		sign_url = f"{site_url}/contract_sign?name={self.name}&token={token}"
 
-		# Send the email to the employee
 		subject = _("Signature Required: Employment Contract {0}").format(self.name)
 		message = f"""
 		<p>Dear {self.employee_name or self.employee},</p>
@@ -120,7 +225,7 @@ class WethaaqContract(Document):
 		"""Marks a Signed contract as Active"""
 		if self.status != "Signed":
 			frappe.throw(_("Only Signed contracts can be marked as Active."))
-		
+
 		self.db_set("status", "Active")
 		self._log_hris_event(f"Contract {self.name} marked as Active manually.")
 
@@ -129,18 +234,18 @@ class WethaaqContract(Document):
 		"""Terminates an Active or Signed contract"""
 		if self.status in ["Terminated", "Cancelled", "Expired"]:
 			frappe.throw(_("Contract is already in an inactive state ({0}).").format(self.status))
-			
+
 		if not termination_date:
 			termination_date = frappe.utils.today()
-			
+
 		if frappe.utils.getdate(termination_date) < frappe.utils.getdate(self.start_date):
 			frappe.throw(_("Termination date cannot be before the contract start date."))
-			
+
 		self.db_set("status", "Terminated")
 		self.db_set("termination_date", termination_date)
 		if reason:
 			self.db_set("termination_reason", reason)
-			
+
 		log_msg = f"Contract {self.name} terminated manually on {termination_date}."
 		if reason:
 			log_msg += f" Reason: {reason}"
@@ -153,7 +258,54 @@ class WethaaqContract(Document):
 		frappe.logger("wethaaq.hris").info(message)
 
 
+def _format_amount(value):
+	amount = flt(value)
+	if amount == int(amount):
+		return f"{int(amount):,}"
+	return f"{amount:,.2f}"
 
+
+def _get_salary_assignment_details(employee, reference_date=None, company=None):
+	"""Return the most recent submitted SSA effective on ``reference_date``."""
+	if not employee:
+		return None
+
+	meta = frappe.get_meta("Salary Structure Assignment")
+	filters = {
+		"employee": employee,
+		"docstatus": 1,
+		"from_date": ["<=", getdate(reference_date or today())],
+	}
+	if company and meta.has_field("company"):
+		filters["company"] = company
+
+	fields = ["name", "from_date"]
+	if meta.has_field("currency"):
+		fields.append("currency")
+	for source_field in SALARY_ASSIGNMENT_FIELD_MAP:
+		if meta.has_field(source_field):
+			fields.append(source_field)
+
+	assignments = frappe.get_all(
+		"Salary Structure Assignment",
+		filters=filters,
+		fields=fields,
+		order_by="from_date desc, creation desc",
+		limit=1,
+	)
+	if not assignments:
+		return None
+
+	assignment = assignments[0]
+	result = {
+		"salary_structure_assignment": assignment.name,
+		"from_date": assignment.from_date,
+		"currency": assignment.get("currency") or "",
+	}
+	for source_field, target_field in SALARY_ASSIGNMENT_FIELD_MAP.items():
+		result[target_field] = flt(assignment.get(source_field))
+
+	return result
 
 
 def on_submit_hook(doc, method):
@@ -162,10 +314,15 @@ def on_submit_hook(doc, method):
 
 
 @frappe.whitelist()
+def get_salary_assignment_details(employee, reference_date=None, company=None):
+	"""Return contract salary values from the effective approved SSA."""
+	frappe.has_permission("Wethaaq Contract", ptype="write", throw=True)
+	return _get_salary_assignment_details(employee, reference_date, company) or {}
+
+
+@frappe.whitelist()
 def fetch_clauses_from_template(template):
-	"""Returns the ordered list of clauses from a Wethaaq Contract Template.
-	Called by the contract form when a template is selected.
-	"""
+	"""Returns the ordered list of clauses from a Wethaaq Contract Template."""
 	if not template:
 		return []
 

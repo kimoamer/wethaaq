@@ -6,28 +6,24 @@ frappe.ui.form.on("Wethaaq Contract", {
     // ── Form Lifecycle ──────────────────────────────────────────────
 
     setup(frm) {
-        // Filter: only Active employees
         frm.set_query("employee", () => ({
             filters: { status: "Active" }
         }));
 
-        // Filter: only templates matching selected contract type
         frm.set_query("template", () => {
             if (frm.doc.contract_type) {
                 return { filters: { contract_type: frm.doc.contract_type } };
             }
         });
 
-        // Filter: departments belonging to the selected company
         frm.set_query("department", () => {
             if (frm.doc.company) {
                 return { filters: { company: frm.doc.company } };
             }
         });
 
-        // Query for job offer can be scoped if needed
         frm.set_query("job_offer", () => ({
-            filters: { docstatus: 1, status: "Accepted" } // Only show Accepted submitted offers
+            filters: { docstatus: 1, status: "Accepted" }
         }));
     },
 
@@ -122,9 +118,8 @@ frappe.ui.form.on("Wethaaq Contract", {
     employee(frm) {
         if (!frm.doc.employee) return;
 
-        // Auto-populate employee details from employee record
         frappe.db.get_value("Employee", frm.doc.employee, [
-            "employee_name", "company", "department", "custom_national_id", 
+            "employee_name", "company", "department", "custom_national_id",
             "passport_number", "custom_governorate", "current_address"
         ], (r) => {
             if (r) {
@@ -135,14 +130,18 @@ frappe.ui.form.on("Wethaaq Contract", {
                 frm.set_value("passport_number", r.passport_number || "");
                 frm.set_value("governorate", r.custom_governorate || "");
                 frm.set_value("current_address", r.current_address || "");
+                frm.trigger("fetch_salary_assignment");
             }
         });
+    },
+
+    start_date(frm) {
+        frm.trigger("fetch_salary_assignment");
     },
 
     template(frm) {
         if (!frm.doc.template) return;
 
-        // Fetch template name
         frappe.db.get_value("Wethaaq Contract Template", frm.doc.template, "template_name", (r) => {
             if (r) {
                 frm.set_value("template_name", r.template_name || "");
@@ -155,7 +154,6 @@ frappe.ui.form.on("Wethaaq Contract", {
             callback(r) {
                 if (!r.message || !r.message.length) return;
 
-                // Clear existing appendices and populate from template
                 frm.clear_table("appendices");
                 r.message.forEach((clause_row) => {
                     let row = frm.add_child("appendices");
@@ -172,17 +170,16 @@ frappe.ui.form.on("Wethaaq Contract", {
     },
 
     contract_type(frm) {
-        // Clear template when type changes to prevent type mismatch
         frm.set_value("template", "");
     },
 
     company(frm) {
-        // Clear department if company changes (avoid cross-company mismatch)
         frm.set_value("department", "");
         frm.set_value("company_representative", "");
         frm.set_value("legal_representative", "");
         frm.set_value("legal_representative_title", "");
         frm.trigger("setup_representatives_options");
+        frm.trigger("fetch_salary_assignment");
     },
 
     company_representative(frm) {
@@ -228,16 +225,54 @@ frappe.ui.form.on("Wethaaq Contract", {
                     });
                 }
             });
-            
-            // Set the options
+
             frm.set_df_property("company_representative", "options", options);
-            
-            // If there's a default representative and company_representative is empty, set it
+
             if (!frm.doc.company_representative) {
                 let default_rep = representatives.find(r => r.is_default);
                 if (default_rep) {
                     frm.set_value("company_representative", default_rep.representative_name);
                 }
+            }
+        });
+    },
+
+    fetch_salary_assignment(frm) {
+        if (!frm.doc.employee || frm.doc.docstatus !== 0) return;
+
+        frappe.call({
+            method: "wethaaq.wethaaq.doctype.wethaaq_contract.wethaaq_contract.get_salary_assignment_details",
+            args: {
+                employee: frm.doc.employee,
+                reference_date: frm.doc.start_date || frappe.datetime.get_today(),
+                company: frm.doc.company || null
+            },
+            callback(r) {
+                const values = r.message || {};
+                if (!values.salary_structure_assignment) return;
+
+                const fieldnames = [
+                    "salary_structure_assignment",
+                    "basic_salary",
+                    "variables",
+                    "representative_transportation_allowance",
+                    "other_expenses",
+                    "car_rent",
+                    "safe_allowance",
+                    "currency"
+                ];
+
+                fieldnames.forEach((fieldname) => {
+                    if (Object.prototype.hasOwnProperty.call(values, fieldname)) {
+                        frm.set_value(fieldname, values[fieldname] || 0);
+                    }
+                });
+
+                frm.trigger("calculate_hourly_rate");
+                frappe.show_alert({
+                    message: __("Salary values fetched from {0}", [values.salary_structure_assignment]),
+                    indicator: "green"
+                });
             }
         });
     },
@@ -253,15 +288,15 @@ frappe.ui.form.on("Wethaaq Contract", {
     basic_salary(frm) {
         frm.trigger("calculate_hourly_rate");
     },
-    
+
     working_hours_per_day(frm) {
         frm.trigger("calculate_hourly_rate");
     },
-    
+
     working_days_per_week(frm) {
         frm.trigger("calculate_hourly_rate");
     },
-    
+
     work_nature(frm) {
         frm.trigger("calculate_hourly_rate");
     },
@@ -270,14 +305,12 @@ frappe.ui.form.on("Wethaaq Contract", {
         if (frm.doc.basic_salary && frm.doc.working_hours_per_day && frm.doc.working_days_per_week) {
             let weekly_hours = frm.doc.working_hours_per_day * frm.doc.working_days_per_week;
             let hourly_rate = 0;
-            
-            // "Daily / يومى", "Weekly / أسبوعى", "Monthly / شهرى"
+
             if (frm.doc.work_nature && frm.doc.work_nature.includes("Daily")) {
                 hourly_rate = frm.doc.basic_salary / frm.doc.working_hours_per_day;
             } else if (frm.doc.work_nature && frm.doc.work_nature.includes("Weekly")) {
                 hourly_rate = frm.doc.basic_salary / weekly_hours;
-            } else { 
-                // Monthly default
+            } else {
                 hourly_rate = (frm.doc.basic_salary * 12) / (52 * weekly_hours);
             }
             frm.set_value("hourly_rate", flt(hourly_rate, 2));
